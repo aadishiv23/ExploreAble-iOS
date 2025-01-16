@@ -7,10 +7,32 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct TabItemsView: View {
     var body: some View {
-        VStack {
-            Text("hello world")
+        TabView {
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+            
+            SearchView()
+                .tabItem(<#T##label: () -> View##() -> View#>) {
+                    Label("Search", systemImage: "magnifyingglass" chatGPT)
+                }
+            
         }
     }
 }
+
+struct HomeView: View {
+    var body: some View {
+        Text("hello world")
+    }
+}
+
+struct SearchView: View {
+    var body: some View {
+        Text("search")
+    }
+}
+
