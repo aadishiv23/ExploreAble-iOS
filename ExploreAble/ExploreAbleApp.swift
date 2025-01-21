@@ -9,7 +9,10 @@ import SwiftUI
 
 @main
 struct ExploreAbleApp: App {
+    /// AuthManager shared instance for authentication state.
     @StateObject private var authManager = AuthManager.shared
+
+    /// Tracks whether the user has a profile.
     @State private var hasProfile = false
 
     var body: some Scene {
@@ -19,7 +22,7 @@ struct ExploreAbleApp: App {
                     if hasProfile {
                         TabItemsView()
                     } else {
-                        ProfileCreationView()
+                        ProfileCreationView(hasProfile: $hasProfile) // Pass binding
                             .interactiveDismissDisabled()
                             .onAppear {
                                 checkProfile()
@@ -47,5 +50,4 @@ struct ExploreAbleApp: App {
             }
         }
     }
-
 }

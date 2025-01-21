@@ -9,6 +9,9 @@ import SwiftUI
 
 /// View for creating a user profile.
 struct ProfileCreationView: View {
+    /// Binding to indicate whether the user has a profile.
+    @Binding var hasProfile: Bool
+
     @StateObject private var viewModel = ProfileViewModel()
     @Environment(\.dismiss) private var dismiss
 
@@ -46,18 +49,10 @@ struct ProfileCreationView: View {
             } message: {
                 Text(viewModel.error ?? "")
             }
-            .onChange(of: viewModel.isProfileCreated) { isCreated in
-                if isCreated {
-                    dismiss()
-                }
-            }
         }
-        // .withGradientBackground()
     }
 
-    // MARK: Subviews
-
-    /// The profile image that is on top of profile creation view. Currently, just a SF Symbol
+    /// The profile image that is on top of profile creation view. Currently, just an SF Symbol.
     private var profileImage: some View {
         Circle()
             .fill(.white.opacity(0.2))
@@ -71,7 +66,7 @@ struct ProfileCreationView: View {
             .padding(.top, 32)
     }
 
-    /// Name field in the form
+    /// Name field in the form.
     private var nameField: some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField("Enter name here", text: $viewModel.profile.name)
@@ -112,7 +107,7 @@ struct ProfileCreationView: View {
         }
     }
 
-    /// Gender field in the form using a default Picker
+    /// Gender field in the form.
     private var genderField: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Gender")
@@ -126,22 +121,25 @@ struct ProfileCreationView: View {
                 Text("Non-binary").tag("Non-binary")
                 Text("Prefer not to say").tag("Prefer not to say")
             }
-            .pickerStyle(MenuPickerStyle()) // Dropdown-style picker
+            .pickerStyle(MenuPickerStyle())
             .padding()
-            .frame(maxWidth: .infinity, minHeight: 50)
             .background(Color.white.opacity(0.7))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(
+                RoundedRectangle(cornerRadius: 12)
+            )
         }
-        .padding(.bottom, 20) // Add spacing below gender picker
     }
 
-
-
-    /// button to create the profile
+    /// Button to create the profile.
     private var createProfileButton: some View {
         Button {
             Task {
-                await viewModel.createProfile()
+                do {
+                    try await viewModel.createProfile()
+                    hasProfile = true // Update hasProfile to true after successful profile creation
+                } catch {
+                    print("Error creating profile: \(error)")
+                }
             }
         } label: {
             HStack {
@@ -173,8 +171,9 @@ struct ProfileCreationView: View {
     }
 }
 
+
 #Preview {
-    ProfileCreationView()
+    ProfileCreationView(hasProfile: .constant(false))
 }
 
 struct CustomGenderPicker: View {
