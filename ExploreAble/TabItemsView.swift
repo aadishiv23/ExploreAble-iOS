@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  TabItemsView.swift
 //  ExploreAble
 //
 //  Created by Aadi Shiv Malhotra on 1/15/25.
@@ -16,17 +16,11 @@ struct TabItemsView: View {
                 }
             
             SearchView()
-                .tabItem(<#T##label: () -> View##() -> View#>) {
-                    Label("Search", systemImage: "magnifyingglass" chatGPT)
+                .tabItem {
+                    Label("Search", systemImage: "magnifyingglass")
                 }
             
         }
-    }
-}
-
-struct HomeView: View {
-    var body: some View {
-        Text("hello world")
     }
 }
 
