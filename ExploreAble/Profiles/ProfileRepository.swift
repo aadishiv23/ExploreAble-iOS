@@ -24,22 +24,44 @@ protocol ProfileRepository {
 /// Implementation of `ProfileRepository` using Supabase.
 class SupabaseProfileRepository: ProfileRepository {
     func createProfile(_ profile: Profile) async throws {
-        try await supabase
-            .from("profiles")
-            .insert(profile)
-            .execute()
+        print("[ProfileRepository] Attempting to create profile: \(profile)")
+
+        do {
+            let response = try await supabase
+                .from("profiles")
+                .insert(profile)
+                .select() // Log the inserted data if available
+                .execute()
+            print("[ProfileRepository] Profile creation successful. Response: \(response)")
+        } catch {
+            print("[ProfileRepository] Failed to create profile. Error: \(error.localizedDescription)")
+            throw error
+        }
     }
 
     func fetchProfile(userId: String) async throws -> Profile? {
-        let profile: Profile? = try await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", value: userId)
-            .single()
-            .execute()
-            .value
+        print("[ProfileRepository] Fetching profile for user ID: \(userId)")
 
-        
-        return profile
+        do {
+            let profile: Profile? = try await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", value: userId)
+                .single()
+                .execute()
+                .value
+
+            if let profile = profile {
+                print("[ProfileRepository] Profile fetched successfully: \(profile)")
+            } else {
+                print("[ProfileRepository] No profile found for user ID: \(userId)")
+            }
+
+            return profile
+        } catch {
+            print("[ProfileRepository] Failed to fetch profile. Error: \(error.localizedDescription)")
+            throw error
+        }
     }
 }
+
